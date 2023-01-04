@@ -92,7 +92,8 @@ const store = async (req, res, next) => {
 
 			src.on("end", async () => {
 				try {
-					let product = await new Product({ ...payload, imgUrl: filename });
+					payload = { ...payload, image_url: filename };
+					let product = await new Product(payload);
 					await product.save();
 					return res.json(product);
 				} catch (err) {
@@ -133,6 +134,7 @@ const update = async (req, res, next) => {
 	try {
 		const { id } = req.params;
 		const payload = req.body;
+		console.log(payload.tags);
 
 		if (payload.category) {
 			let category = await Category.findOne({
@@ -163,7 +165,7 @@ const update = async (req, res, next) => {
 			let filename = req.file.filename + "." + originalExt;
 			let target_path = path.resolve(
 				config.rootPath,
-				`public/images/profucts/${filename}`,
+				`public/images/products/${filename}`,
 			);
 
 			const src = fs.createReadStream(tmp_path);
@@ -173,7 +175,7 @@ const update = async (req, res, next) => {
 			src.on("end", async () => {
 				try {
 					let product = await Product.findById(id);
-					const currentImage = `${config.rootPath}/public/images/products/${product.imgUrl}`;
+					const currentImage = `${config.rootPath}/public/images/products/${product.image_url}`;
 
 					if (fs.existsSync(currentImage)) {
 						fs.unlinkSync(currentImage);
@@ -225,7 +227,7 @@ const destroy = async (req, res, next) => {
 	try {
 		let product = await Product.findByIdAndDelete({ _id: req.params.id });
 
-		let currentImage = `${config.rootPath}/public/images/products/${product.imgUrl}`;
+		let currentImage = `${config.rootPath}/public/images/products/${product.image_url}`;
 		if (fs.existsSync(currentImage)) {
 			fs.unlinkSync(currentImage);
 		}
