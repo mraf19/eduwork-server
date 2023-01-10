@@ -93,6 +93,7 @@ const store = async (req, res, next) => {
 			src.on("end", async () => {
 				try {
 					payload = { ...payload, image_url: filename };
+					console.log(payload);
 					let product = await new Product(payload);
 					await product.save();
 					return res.json(product);
@@ -105,7 +106,6 @@ const store = async (req, res, next) => {
 							fields: err.errors,
 						});
 					}
-
 					next(err);
 				}
 			});
@@ -133,7 +133,7 @@ const store = async (req, res, next) => {
 const update = async (req, res, next) => {
 	try {
 		const { id } = req.params;
-		const payload = req.body;
+		let payload = req.body;
 		console.log(payload.tags);
 
 		if (payload.category) {
