@@ -1,6 +1,14 @@
 const router = require("express").Router();
-const userController = require("./contoller");
+const authController = require("./contoller");
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
 
-router.post("/register", userController.register);
+passport.use(
+	new LocalStrategy({ usernameField: "email" }, authController.localStrategy),
+);
+router.post("/register", authController.register);
+router.post("/register", authController.register);
+router.post("/logout", authController.logout);
+router.get("/me", authController.me);
 
 module.exports = router;
