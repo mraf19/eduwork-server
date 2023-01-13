@@ -1,4 +1,4 @@
-const { getToken } = require("../utils");
+const { getToken, policyfor } = require("../utils");
 const jwt = require("jsonwebtoken");
 const config = require("../app/config");
 const User = require("../app/User/model");
@@ -17,7 +17,7 @@ function decodeToken() {
 			if (!user) {
 				res.json({
 					error: 1,
-					messsage: "Token expired",
+					messsage: "You're not logged in or token expired",
 				});
 			}
 		} catch (err) {
@@ -32,6 +32,22 @@ function decodeToken() {
 		return next();
 	};
 }
+
+// middleware check hak akses
+
+function policeCheck(action, subject) {
+	return function (req, res, next) {
+		let policy = policyfor(req.user);
+		if (!policy.can(action, subject)) {
+			return res.json({
+				error: 1,
+				message: `You are not allowed to ${action} ${subject}`,
+			});
+		}
+		next();
+	};
+}
 module.exports = {
 	decodeToken,
+	policeCheck,
 };
