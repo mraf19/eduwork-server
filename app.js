@@ -8,6 +8,7 @@ const productRoute = require("./app/product/router");
 const categoryRoute = require("./app/category/router");
 const tagRoute = require("./app/tag/router");
 const authRoute = require("./app/auth/router");
+const deliveryAddressRoute = require("./app/deliveryAddress/router");
 const { decodeToken } = require("./middlewares");
 
 var app = express();
@@ -28,6 +29,7 @@ app.use("/auth/", authRoute);
 app.use("/api/", productRoute);
 app.use("/api/", categoryRoute);
 app.use("/api/", tagRoute);
+app.use("/api/", deliveryAddressRoute);
 
 app.use("/", function (req, res) {
 	res.render("index", {
