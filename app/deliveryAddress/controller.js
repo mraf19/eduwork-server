@@ -1,3 +1,5 @@
+const { subject } = require("@casl/ability");
+const { policyfor } = require("../../utils");
 const delivAdd = require("./model");
 
 const store = async (req, res, next) => {
@@ -23,7 +25,7 @@ const store = async (req, res, next) => {
 	}
 };
 
-const view = async (req, res, next) => {
+const index = async (req, res, next) => {
 	try {
 		const delivery = await delivAdd.find().populate("user");
 		res.json(delivery);
@@ -42,16 +44,24 @@ const view = async (req, res, next) => {
 
 const update = async (req, res, next) => {
 	try {
-		const payload = req.body;
-		const delivery = await delivAdd.findByIdAndUpdate(
-			{ _id: req.params.id },
-			payload,
-			{ new: true, runValidators: true },
-		);
-		await delivery.save();
+		let { _id, ...payload } = req.body;
+		let { id } = req.params;
+		let address = await delivAdd.findById(id);
+		let subjectAddress = subject("DeliveryAdress", {
+			...address,
+			user_id: address.user,
+		});
+		let policy = policyfor(req.user);
+		if (!policy.can("update", subjectAddress)) {
+			return res.json({
+				error: 1,
+				message: "You are not allowed to modify this resource",
+			});
+		}
+		address = await delivAdd.findByIdAndUpdate(id, payload, { new: true });
 		res.json({
 			message: "Address updated successfully",
-			deliveryAddress: delivery,
+			deliveryAddress: address,
 		});
 	} catch (err) {
 		if (err && err.name === "ValidationError") {
@@ -68,10 +78,23 @@ const update = async (req, res, next) => {
 
 const destroy = async (req, res, next) => {
 	try {
-		const delivery = await delivAdd.findByIdAndDelete({ _id: req.params.id });
+		let { id } = req.params;
+		let address = await delivAdd.findById(id);
+		let subjectAddress = subject("DeliveryAddress", {
+			...address,
+			user_id: address.user,
+		});
+		let policy = policyfor(req.user);
+		if (!policy.can("delete", subjectAddress)) {
+			return res.json({
+				error: 1,
+				message: "You are not allowed to delete this resource",
+			});
+		}
+		address = await delivAdd.findByIdAndDelete(id);
 		res.json({
 			message: "Address deleted successfully",
-			data: delivery,
+			data: address,
 		});
 	} catch (err) {
 		if (err && err.name === "ValidationError") {
@@ -87,7 +110,7 @@ const destroy = async (req, res, next) => {
 };
 module.exports = {
 	store,
-	view,
+	index,
 	update,
 	destroy,
 };

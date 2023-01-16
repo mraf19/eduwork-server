@@ -10,17 +10,9 @@ router.post(
 router.get(
 	"/delivery-addresses",
 	policeCheck("view", "DeliveryAddress"),
-	delivAddController.view,
+	delivAddController.index,
 );
-router.put(
-	"/delivery-addresses/:id",
-	policeCheck("update", "DeliveryAddress"),
-	delivAddController.update,
-);
-router.delete(
-	"/delivery-addresses/:id",
-	policeCheck("delete", "DeliveryAddress"),
-	delivAddController.destroy,
-);
+router.put("/delivery-addresses/:id", delivAddController.update);
+router.delete("/delivery-addresses/:id", delivAddController.destroy);
 
 module.exports = router;
