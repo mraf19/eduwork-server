@@ -27,8 +27,14 @@ const store = async (req, res, next) => {
 
 const index = async (req, res, next) => {
 	try {
-		const delivery = await delivAdd.find().populate("user");
-		res.json(delivery);
+		let { skip = 0, limit = 10 } = req.query;
+		let count = await delivAdd.find({ user: req.user._id }).countDocuments();
+		const address = await delivAdd
+			.find({ user: req.user._id })
+			.skip(parseInt(skip))
+			.limit(parseInt(limit))
+			.sort("-createdAt");
+		res.json(address);
 	} catch (err) {
 		if (err && err.name === "ValidationError") {
 			return res.json({
