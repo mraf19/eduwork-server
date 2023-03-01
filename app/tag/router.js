@@ -3,6 +3,7 @@ const { policeCheck } = require("../../middlewares");
 const tagController = require("./controller");
 
 router.get("/tags", tagController.index);
+router.get("/tags/:category", tagController.showTagByCategory);
 router.post("/tags", policeCheck("create", "Tag"), tagController.store);
 router.put("/tags/:id", policeCheck("update", "Tag"), tagController.update);
 router.delete("/tags/:id", policeCheck("delete", "Tag"), tagController.destroy);

@@ -88,6 +88,8 @@ const store = async (req, res, next) => {
 
 			const src = fs.createReadStream(tmp_path);
 			const dest = fs.createWriteStream(target_path);
+			console.log(tmp_path)
+			console.log(target_path);
 			src.pipe(dest);
 
 			src.on("end", async () => {
