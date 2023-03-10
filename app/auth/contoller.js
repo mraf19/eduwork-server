@@ -21,7 +21,7 @@ const register = async (req, res, next) => {
 			});
 		}
 	}
-	next(err);
+	next();
 };
 
 const localStrategy = async (email, password, done) => {
