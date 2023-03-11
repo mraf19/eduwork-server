@@ -7,8 +7,11 @@ const store = async (req, res, next) => {
     const payload = req.body;
     console.log(payload);
     const user = req.user;
-    const delivery = new delivAdd({ ...payload, user: user._id });
+    console.log(user);
+    const delivery = await new delivAdd({ ...payload, user: user._id });
+    console.log(delivery);
     await delivery.save();
+    console.log("ok");
     res.json({
       message: "address uploaded successfully",
       deliveryAddress: delivery,
