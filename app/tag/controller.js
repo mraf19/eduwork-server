@@ -85,7 +85,6 @@ const showTagByCategory = async (req, res, next) => {
     const products = await Product.find({ category: category_id });
     let tagIds = [];
     products.forEach((product) => {
-      console.log(product.tags);
       product.tags.forEach((tag) => {
         if (!tagIds.includes(tag)) {
           tagIds.push(tag);
