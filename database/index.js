@@ -1,18 +1,18 @@
 const mongoose = require("mongoose");
-const { dbHost, dbPort, dbUser, dbPass, dbName } = require("../app/config");
+const { dbUrl } = require("../app/config");
 
 mongoose.set("strictQuery", true);
 
 mongoose
-	.connect(
-		`mongodb://${dbUser}:${dbPass}@${dbHost}:${dbPort}/${dbName}?authSource=admin`,
-	)
-	.then(() => {
-		console.log("Connected to DB");
-	})
-	.catch((err) => {
-		console.log(err);
-	});
+  .connect(dbUrl, {
+    dbName: "eduwork",
+  })
+  .then(() => {
+    console.log("Connected to DB");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 const db = mongoose.connection;
 
